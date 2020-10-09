@@ -19,6 +19,7 @@ y_train <- to_categorical(y_train, 10)
 y_test <- to_categorical(y_test, 10)
 
 
+mlflow_start_run(experiment_id = 2)
 model <- keras_model_sequential()
 
 model %>% 
@@ -36,8 +37,21 @@ model %>%
 history <- model %>% 
   fit(x_train, y_train, epochs = 30, batch_size = 128, validation_split = 0.2)
 
-model %>% 
+png(filename = "nn_performance.png")
+plot(history)
+dev.off()
+
+nn_metrics <- model %>% 
   evaluate(x_test, y_test)
 
-model %>% 
-  predict_classes(x_test)
+mlflow_log_param("hiddenlayers", 3)
+mlflow_log_param("loss_function", "categorical_crossentropy")
+mlflow_log_param("epochs", 30)
+
+mlflow_log_metric("loss", nn_metrics[1])
+mlflow_log_metric("accouracy", nn_metrics[2])
+
+mlflow_log_model(model, "mnist_net")
+mlflow_log_artifact(path = "nn_performance.png")
+
+mlflow_end_run()
