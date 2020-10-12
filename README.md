@@ -28,7 +28,7 @@ Folgende Pakete können mit dem R-Befehl `install.packages(NAME_DES_PAKETS)` ins
 Die Pakete **keras** & **tensorflow** werden nur für ein Beispiel gebraucht und sind daher optional.
 
 ## Setup
-Um die nötigen R-Skripte runterzuladen, kann das git-repository entweder komplett als *zip*-File heruntergeladen werden oder mit einem R-Projekt verknüpft werden. Dafür legt man
+Um die nötigen R-Skripte herunterzuladen, kann das git-repository entweder komplett als *zip*-File heruntergeladen werden oder mit einem R-Projekt verknüpft werden. Dafür legt man
 in der RStudio-Oberfläche ein neues R-Projekt an und wählt die Variante *Version Control* aus (https://support.rstudio.com/hc/en-us/articles/200532077-Version-Control-with-Git-and-SVN).
 
 Um die erfolgreiche Installation von *mlflow* sicherzustellen, sollte der R-Befehl `mlflow::mlflow_ui()` ausgeführt werden. Dabei sollte sich ein Fenster öffnen (entweder
