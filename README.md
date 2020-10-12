@@ -1,9 +1,18 @@
-# mlflow_workshop
+# Entwicklung und Deployment von Machine Learning Modellen mit R und MLflow
+
+## Agenda für den Workshop am 19.10 im Rahmen der data2day 2020
+
+* 09.30 - 11.00 Uhr: Einführung in die Entwicklung von ML Modellen mit R
+* 11.15 - 12.30 Uhr: Einführung in das Konzept des ML Lifecycles und Vorstellung von *MLflow Tracking*
+
+* 13.30 - 14.45 Uhr: Bereitstellen und Abrufen von Modellen mittels *MLflow Models* 
+* 15.00 - 16.30 Uhr: Organisation von ML Projekten mit *Mlflow Projects* und Deployment von Modellen als REST-API
+* 16.30 - 17.00 Uhr: Offene Fragen & Ausblick 
 
 ## Technische Voraussetzungen
 
 ### Betriebssystem
-Grundsätzlich sollten *R* und *mlflow* unter jedem Betriebssystem funktionieren. Allerdings gibt es in der aktuellen Version einen Fehler bei der Nutzung von *mlflow* in der Kombination mit *R* auf *Windows* (der Grund dafür ist noch nicht geklärt). Vorzugsweise sind also *macOS* oder *Linux* zu benutzen. Möglicherweise funktioniert es aber auch unter *Windows*.
+Grundsätzlich sollten *R* und *MLflow* unter jedem Betriebssystem funktionieren. Allerdings gibt es in der aktuellen Version einen Fehler bei der Nutzung von *MLflow* in der Kombination mit *R* auf *Windows* (der Grund dafür ist noch nicht geklärt). Vorzugsweise sind also *macOS* oder *Linux* zu benutzen. Möglicherweise funktioniert es aber auch unter *Windows*.
 
 ### Software
 * **Anaconda3**: https://docs.anaconda.com/anaconda/install/
@@ -31,5 +40,5 @@ Die Pakete **keras** & **tensorflow** werden nur für ein Beispiel gebraucht und
 Um die nötigen R-Skripte herunterzuladen, kann das git-repository entweder komplett als *zip*-File heruntergeladen werden oder mit einem R-Projekt verknüpft werden. Dafür legt man
 in der RStudio-Oberfläche ein neues R-Projekt an und wählt die Variante *Version Control* aus (https://support.rstudio.com/hc/en-us/articles/200532077-Version-Control-with-Git-and-SVN).
 
-Um die erfolgreiche Installation von *mlflow* sicherzustellen, sollte der R-Befehl `mlflow::mlflow_ui()` ausgeführt werden. Dabei sollte sich ein Fenster öffnen (entweder
-in*RStudio* oder im Browser), in dem die *mlflow* UI zu sehen ist. 
+Um die erfolgreiche Installation von *MLflow* sicherzustellen, sollte der R-Befehl `mlflow::mlflow_ui()` ausgeführt werden. Dabei sollte sich ein Fenster öffnen (entweder
+in*RStudio* oder im Browser), in dem die *MLflow* UI zu sehen ist. 
