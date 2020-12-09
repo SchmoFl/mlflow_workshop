@@ -1,0 +1,912 @@
+---
+title: "Machine Learning mit R"
+subtitle: "eoda Data Science Trainings"
+author: "Florian Schmoll"
+institute: "eoda GmbH"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r xaringan-tile-view, echo=FALSE}
+xaringanExtra::use_tile_view()
+```
+
+---
+
+class: inverse, center, middle
+
+# Über uns
+
+---
+
+# eoda
+
+- Gegründet 2010, 50 Mitarbeiter, Sitz in Kassel
+- Beratungs- und Dienstleistungsunternehmen für Data Science
+- Data Science, aicon (Analytical Infrastructure Consulting), Softwareentwicklung (Analyseplattform YUNA)
+- Projekte mit Kunden aus verschiedenen Branchen, Trainings, Use-Case-Workshops, ...
+
+---
+
+# Florian Schmoll
+
+--
+
+- Mathematikstudium in Kassel
+
+--
+
+- Seit 2017 als Data Scientist bei eoda
+
+--
+
+- Trainer für R und python (Fokus auf ML und Zeitreihenanalyse)
+
+--
+
+- Arbeit in Projekten im Bereich Industrie & Handel
+
+--
+
+- zertifizierter RStudio Instructor
+
+---
+
+# Kursablauf
+
+--
+
+- Dienstag: Auffrischung/Einführung in R
+
+--
+
+- Mittwoch-Freitag: Machine Learning
+
+--
+
+- Kurszeiten: 9-17 (9-13) Uhr, einstündige Mittagspause + Kaffeepausen
+
+--
+
+- Live-Coding
+
+--
+
+- Übungen
+
+--
+
+- Fragen und Exkurse 
+
+---
+
+# Inhalte & Ziele
+
+--
+
+- Wie arbeitet man mit R? Was macht R aus?
+
+--
+
+- Was sind die "Grundbausteine" von R? Objekte, Funktionen, Pakete, Datentypen
+
+--
+
+- Was ist das tidyverse?
+
+--
+
+- grundlegendes & fortgeschrittenes Datenmanagement
+
+--
+
+- grundlegende Visualisierung
+
+---
+
+# Kursziele
+
+Am Ende des Trainings sind die Teilnehmer in der Lage:
+
+--
+
+- grundlegende ML Modelle mit tidymodels anzuwenden
+
+--
+
+- Modelle sinnvoll zu evaluieren
+
+--
+
+- mit tidymodels ML workflows zu implementieren und anzuwenden
+
+--
+
+- bestehende workflows an neue Daten bzw. neue Modelle anzupassen
+
+---
+
+class: inverse, center, middle
+
+# Data Mining Workflow
+
+---
+
+background-image: url("imgs/CRISP-DM_Process_Diagram.png")
+background-position: center
+background-size: contain
+
+---
+
+# Strukturierte vs Unstrukturierte Daten
+
+--
+
+- Tabellarische Daten (*queriable* mit SQL)
+
+--
+
+- Zeitreihen
+
+--
+
+- Bilddaten
+
+--
+
+- Video, Audio, Text, ...
+
+--
+
+
+Wir beschäftigen uns mit tabellarischen (zeitunabhängigen) Daten
+
+---
+
+
+
+# Supervised vs Unsupervised Learning
+
+--
+
+Supervised
+- Modelle werden trainiert, um eine *outcome*-Variable vorauszusagen
+- Trainierte Modelle werden auf neue Daten angewendet, um Werte für die dort fehlende outcome-Variable zu erzeugen
+- Daten bestehen aus einer *outcome*-Variable und verschiedenen *predictor*-Variablen
+
+--
+
+Unsupervised
+- Keine *outcome*-Variable
+- Zum Beispiel: clustering, PCA
+
+---
+
+# Klassifizierung und Regression
+
+--
+
+Regression
+- Voraussage einer metrischen/kontinuierlichen Variable
+- Was ist der Preis eines Hauses in Boston?
+
+--
+
+Klassifizierung
+- Voraussage einer kategorischen Variable
+- Wird ein Kunde in nächster Zeit abwandern?
+
+---
+
+# Machine Learning Modelle in diesem Kurs
+
+--
+
+- linear regression
+
+--
+
+- elastic net
+
+--
+
+- decision trees
+
+--
+
+- random forest
+
+--
+
+- SVM
+
+--
+
+- GBM
+
+--
+
+- naive bayes
+
+--
+
+- kmeans
+
+-- 
+
+- (neuronale Netze)
+- (MARS)
+
+---
+
+# Machine Learning in R
+
+--
+
+Unterschiedliche Algorithmen/Modelle sind in jeweils eigenen Paketen implementiert
+
+--
+
+Es gibt Pakete, die ein modellunabhängiges Framework/Interface darstellen:
+
+--
+
+- **caret** 
+
+--
+
+- **MLR3**
+
+--
+
+- **tidymodels**
+
+---
+
+# tidymodels
+
+
+--
+
+1. Sampling mit **rsample**
+
+--
+
+1. Preprocessing mit **recipes**
+
+--
+
+1. Modelltraining mit **parsnip**
+
+--
+
+1. ML Workflows mit **workflows**
+
+--
+
+1. Evaluation mit **yardstick**
+
+--
+
+1. Hyperparametertuning mit **tune**
+
+---
+
+class: inverse, center, middle
+
+# Decision Tree
+
+---
+
+Bilden von Regeln, um Daten einer Kategorie zuzuordnen
+
+--
+
+Beispiel: Hat ein Passagier das Titanic-Unglück überlebt?
+
+--
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+library(rpart.plot)
+library(rpart)
+
+data(ptitanic)
+
+binary.model <- rpart(survived ~ ., data = ptitanic, cp = .02)
+                                      
+
+rpart.plot(binary.model,
+           main = "titanic survived\n(binary response)")
+
+rpart.plot(binary.model, type = 3, clip.right.labs = FALSE,
+           branch = .4,
+           box.palette = "Grays",      
+           main = "type = 3, clip.right.labs = FALSE, ...\n")
+```
+---
+
+class: inverse, center, middle
+
+# Linear Regression
+
+---
+
+Linearer Zusammenhang zwischen outcome und predictor
+
+--
+
+Schätzung der Koeffizienten mit Kleinster-Quadrate-Methode:
+
+--
+
+$$
+\text{hwy} = \alpha * \text{displ} + \beta + \varepsilon
+$$
+
+--
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  xlab("engine displacement in litres") +
+  ylab("Highway miles per galon") +
+  ggtitle("Example of a linear regression") +
+  geom_smooth(method = "lm")
+
+```
+
+---
+
+class: inverse, center, middle
+
+# Elastic Net
+
+---
+
+# Lasso and Ridge Regression
+
+--
+
+
+Strafe auf große Parameter, um *overfitting* zu vermeiden
+
+--
+
+Lineare Regression:
+
+$$
+\min \sum_{i = 1}^N (y_i - \beta_0 - x_i^T \beta_i)^2
+$$
+
+--
+
+Lasso Regression:
+$$
+\min \sum_{i = 1}^N (y_i - \beta_0 - x_i^T \beta_i)^2 + \lambda ||\beta||_1
+$$
+
+--
+
+Ridge Regression:
+
+$$
+\min \sum_{i = 1}^N (y_i - \beta_0 - x_i^T \beta_i)^2 + \lambda ||\beta||_2
+$$
+
+--
+
+Elastic Net: Kombination von Lasso und Ridge
+
+---
+
+class: inverse, center, middle
+
+# Modellierung und Resampling
+
+---
+
+# parsnip
+
+--
+
+- Interface, um Modelle zu trainieren
+
+--
+
+- Jedes Modell ist in einer eigenen Funktion umgesetzt, z.B. **linear_reg()**
+
+--
+
+- Die spezifische Implementierung muss als *engine* definiert werden: **set_engine**
+
+--
+
+- Nutzer kann optionale Hyperparameter einstellen
+
+--
+
+- **fit**-Methode, um Modelle zu trainieren
+
+---
+
+# rsample
+
+--
+
+- Trennen von Daten in Trainings- und Testdaten
+
+--
+
+- Stratifizierung
+
+--
+
+- Bootstrap resampling
+
+--
+
+- cross validaton
+
+---
+
+class: inverse, center, middle
+
+# Evaluation
+
+---
+
+# metrics - Regression
+
+--
+
+- Mean Error: $\frac{1}{n} \sum_{i=1}^{n} y_i - \hat{y_i}$
+
+--
+
+- Mean Absolute Error: $\frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y_i}|$
+
+--
+
+- Root Mean Squared Error: $\sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y_i})^2}$
+
+--
+
+- Max. Error: $\max_{i = 1,...,n} y_i - \hat{y_i}$
+
+--
+
+- $R^2 = 1 - \frac{\sum_{i = 1}^{n} (y_i - \hat{y_i})^2}{\sum_{i = 1}^{n} (y_i - \bar{y_i})^2}$
+
+---
+
+background-image: url("imgs/conf_mat.jpg")
+background-position: center
+background-size: contain
+
+---
+
+class: inverse, center, middle
+
+# Preprocessing
+
+---
+
+# recipes
+
+--
+
+- Nutzer definiert eine Formel (outcome, predictors)
+- Möglichkeit, verschiedene Vorverarbeitungsschritte zu definieren
+
+--
+
+Zum Beispiel:
+
+--
+
+- Umgang mit fehlenden Werten (medianimpute, meanimpute, modeimpute, bagimpute)
+
+--
+
+- Umgang mit unbalancierten Klassen (upsampling, downsampling, rose, smote)
+
+--
+
+- Feature Selection/Engineering (zv, nvz, Skalierung, Encoding)
+
+--
+
+- Principal Component Analysis (Dimensionsreduzierung)
+
+---
+
+# workflows
+
+--
+
+- workflow Objekte
+
+--
+
+- workflow besteht aus: formula, recipe, model
+
+--
+
+- workflow kann im ganzen trainiert und angewendet werden
+
+--
+
+- Jeder Teil kann angepasst und ausgetauscht werden
+
+--
+
+- Workflows im ganzen trainiert werden
+
+---
+
+class: inverse, center, middle
+
+# Random Forest
+
+---
+
+# random forest
+
+--
+
+- Training verschiedener Entscheidungsbäume. Prediction wird durch Aggregation der einzelnen Bäume erzeugt.
+
+--
+
+- Für jeden Baum wird eine Teilmenge der Features benutzt
+
+--
+
+- Für jeden Baum wird eine Teilmenge der Beobachtungen benutzt (Bootstrap)
+
+--
+
+random forests sind **robust** und **recheneffizient** (Parallelisierung). 
+
+--
+
+random forests bieten oftmals ein gutes **baseline**-Modell, sind allerdings nicht mehr so leicht interpretierbar.
+
+--
+
+Hyperparameter:
+
+--
+
+- mtry: Anzahl der Parameter, die von einem Baum genutzt werden können
+
+--
+
+- trees: Anzahl der Bäume
+
+--
+
+- min_n: Minimalanzahl an Beobachtungen in einem Blatt
+
+---
+
+class: inverse, center, middle
+
+# Support Vector Machines
+
+---
+
+# Support Vector Machines
+
+--
+
+SVMs teilen den Variablenraum in 2 Teils. Dabei benutzen sie **Hyperebenen** und weisen jedem
+Unterraum eine Klasse zu.
+
+--
+
+Mithilfe des **kernel trick** werden die Daten in eine höhere Dimension projiziert, um
+sie leichter separieren zu können.
+
+--
+
+Unterschiedliche Implementierungen unterscheiden sich in Bezug auf ihre **kernels** (radial, polynomial, ...).
+
+--
+
+Daten sollten zunächst **skaliert** werden.
+
+--
+
+Hyperparameter:
+
+--
+
+- cost: Strafe für eine Fehlklassifizierung.
+
+--
+
+- rbf_sigma: Präzision der Separierung.
+
+
+---
+
+background-image: url("imgs/svm.png")
+background-position: center
+background-size: contain
+
+
+---
+
+background-image: url("imgs/svm_kernel.png")
+background-position: center
+background-size: contain
+
+---
+
+class: inverse, center, middle
+
+# tune
+
+---
+
+# Hyperparametertuning
+
+--
+
+- Training verschiedener Modelle, die sich in ihren Hyperparametern unterscheiden.
+- Nutzung von resampling Methoden in Kombination mit Suchverfahren
+
+--
+
+### Bootstrap: 
+
+--
+
+- Ziehen (mit zurücklegen) aus den urpsrünglichen Beobachtungen
+
+--
+
+- Erzeugen von N (Trainings-)Datensätzen mit gleich vielen Beobachtungen wie der Ursprungsdatensatz
+
+--
+
+- Jede Beobachtung kann (mehrfach) in jedem Bootstrap Sample enthalten sein
+
+--
+
+- Alle nicht gezogenen Beobachtungen bilden (jeweils) den Testdatensatz
+
+---
+
+### Cross Validation
+
+--
+
+- Einteilung des Datensatzes in k Teile (*Folds*)
+
+--
+
+- k-1 Folds dienen jeweils als Trainingsdatensatz
+
+--
+
+- das letzte Fold dient jeweils als Testdatensatz
+
+--
+
+- insgesamt werden k Modelle trainiert
+
+--
+
+- ggf. wird dieses Verfahren mehrfach durchgeführt
+
+---
+
+# Search Methods
+
+--
+
+### grid search
+
+--
+
+- vordefinierte Menge an Hyperparameterkombinationen werden durchsucht
+
+--
+
+- entweder werden die Kombinationen explizit angegeben oder eine Anzahl, die aus einem default grid ausgewählt wird
+
+--
+
+### random grid search
+
+--
+
+- zufällige Suche in einem (beschränkten) Hyperparameterraum
+
+--
+
+- Angabe einer Anzahl an zu evaluierenden Kombinationen
+
+---
+
+## bayesian grid search
+
+--
+
+
+- Evaluation von einigen zufälligen Startkombinationen
+
+--
+
+- Berechnung einer zu erwartenden Verbesserung, für Kombinationen aus der *Nachbarschaft*
+
+--
+
+- In der Nachbarschaft einer *erfahrungsgemäß* guten Kombination werden weitere Kombinationen getestet
+
+--
+
+- Kombinationen werden (bspw.) auf Basis der zu erwartenden Verbesserung ausgewählt
+
+
+---
+
+class: inverse, center, middle
+
+# Gradient Boosting
+
+---
+
+- Iteratives Verbessern eines *schwachen* Lerners (z.B. decision tree)
+
+--
+
+- In jedem Schritt wird der schwache Lerner trainiert
+
+--
+
+- Modell wird durch die Berechnung des Gradienten verbessert
+
+--
+
+## Hyperparameter - Boosted Trees
+
+--
+
+- Baumgröße: es wird eine Baumgröße $J$ empfohlen, mit $4 \leq J \leq 8$.
+
+--
+
+- Shrinkage: Schrittgröße, die der Algorithmus in einer Iteration zurücklegt. Empirisch ist
+eine Schrittgröße von $\nu < 0.1$ empfehlenswert, aber sehr rechenineffizient.
+
+--
+
+- Mindestanzahl an Beobachtungen in den Blättern, um Varianz zu vermeiden
+
+--
+
+- Bestrafen der Baumkomplexität, um overfitting zu vermeiden
+
+---
+
+class: inverse, center, middle
+
+# Naive Bayes
+
+---
+
+# Naive Bayes
+
+--
+
+- Grundannahmen: Alle *predictors* gleich wichtig und statistisch unabhängig (quasi nie erfüllt)
+
+--
+
+- Empirisch gute Ergebnisse, obwohl Annahmen nicht immer stimmen
+
+--
+
+- Guter Umgang mit fehlenden Werten
+
+--
+
+- Berechnung von einer gemeinsamen Zufallsverteilung für jede *outcome*-*predictor*-Kombination
+
+--
+
+- Bei gegebenen *predictor*-Werten: Berechnung von (bedingten) Wahrscheinlichkeiten der *outcome*-Variable
+
+--
+
+- Normierung der Wahrscheinlichkeiten und Auswählen der *wahrscheinlichsten* Ausprägung
+
+---
+
+# Satz von Bayes
+
+--
+
+$H$ - Ausprägung der *outcome*-Variable
+$E$ - Ausprägungen der *predictor*-Variablen
+
+
+$$ \Pr (H | E) = \frac{\Pr (E | H) \Pr (H)}{\Pr (E)} $$
+
+--
+$\Pr (H)$ - *a-priori*-Wahrscheinlichkeit
+$\Pr (H | E)$ - *a-posteriori*-Wahrscheinlichkeit
+
+Aufgrund der statistischen Unabhängigkeit der *predictor*-Variablen gilt:
+$$ \Pr (H | E) = \frac{\Pr (E_1 | H) Pr (E_2 | H)  ... Pr (E_n | H) \Pr (H)}{\Pr (E)}  $$
+
+--
+
+$\Pr (E)$ ist immer gleich und ist irrelevant, da Wahrscheinlichkeiten am Ende normiert werden.
+
+---
+
+# naive Bayes - Umgang mit spezifischen Daten
+
+--
+
+- *nominal predictors*: gemeinsame Wahrscheinlichkeitsverteilung über Häufigkeitstabelle
+
+--
+
+- Häufigkeit $0$ führt zu Wahrscheinlichkeit $0$ $\longrightarrow$ Addieren eines kleinen Wertes für im Zähler und Nenner des Bruchs
+
+--
+
+- *numeric preditors*: Schätzung einer Wahrscheinlichkeitsverteilung für jede *outcome*-Ausprägung
+
+--
+
+- Fehlende Werte: Beim Training wird die Beobachtung beim betroffenen *predictor* nicht berücksichtigt; 
+Bei der Klassifikation wird keine Wahrscheinlichkeit berechnet
+
+--
+
+- identische *predictors* sind problematisch
+
+--
+
+- Alles in allem solides Modell, das sich gut als baseline eignet
+
+---
+
+# What's Next?
+
+- tidymodels extensions: https://www.tidymodels.org/packages/
+  - tidyrecipes: https://textrecipes.tidymodels.org/
+  - baguette: https://github.com/tidymodels/baguette
+  
+
+- autoML with h2o: https://docs.h2o.ai/h2o-tutorials/latest-stable/h2o-world-2017/automl/index.html
+
+- time series analysis
+  - fable: https://github.com/tidyverts/fable
+  - modeltime: https://business-science.github.io/modeltime/
+  - timetk: https://business-science.github.io/timetk/
+
+- Deep Learning
+  - keras: https://keras.rstudio.com/
+  - tensorflow: https://tensorflow.rstudio.com/
+  - torch: https://torch.mlverse.org/
+  
+Falls ihr noch Fragen habt, kontaktiert mich gerne direkt: florian.schmoll@eoda.de
+
+
+---
